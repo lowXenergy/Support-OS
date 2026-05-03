@@ -104,7 +104,7 @@ const Header = ({ title, toggleSidebar }) => {
               <Menu size={20} />
             </button>
           )}
-          {!isMobile && user?.role !== 'agent' && (
+          {!isMobile && user?.role !== 'agent' && user?.role !== 'superadmin' && (
             <div style={{ position: 'relative', width: '100%' }}>
               <Search size={18} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text)' }} />
               <input 
@@ -179,7 +179,7 @@ const Header = ({ title, toggleSidebar }) => {
           </div>
         </div>
 
-        {location.pathname !== '/agent/profile' && (
+        {location.pathname !== '/agent/profile' && location.pathname !== '/superadmin/settings' && (
           <button 
             onClick={() => {
               if (user?.role === 'agent') navigate('/agent/profile');
