@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Avatar from '../common/Avatar';
-import { Bell, Search, Settings, X, Check, Clock, MessageSquare, Zap, Shield, AlertCircle, Menu } from 'lucide-react';
+import { Bell, Settings, X, Check, Clock, MessageSquare, Zap, Shield, AlertCircle, Menu } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 
@@ -104,15 +104,7 @@ const Header = ({ title, toggleSidebar }) => {
               <Menu size={20} />
             </button>
           )}
-          {!isMobile && user?.role !== 'agent' && user?.role !== 'superadmin' && (
-            <div style={{ position: 'relative', width: '100%' }}>
-              <Search size={18} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text)' }} />
-              <input 
-                placeholder="Global search..." 
-                style={{ width: '100%', padding: '10px 16px 10px 40px', backgroundColor: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '10px', fontSize: '14px', color: 'var(--text-bright)', outline: 'none' }} 
-              />
-            </div>
-          )}
+
         </div>
       ) : (
         <div style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
