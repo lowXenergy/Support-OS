@@ -4,10 +4,12 @@ import { Send, FileText, Tag, Shield, HelpCircle, Upload, X, Paperclip } from 'l
 import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
 import useNotification from '../../hooks/useNotification';
+import { useTicketContext } from '../../contexts/TicketContext';
 
 const TicketForm = () => {
   const navigate = useNavigate();
   const notification = useNotification();
+  const { addTicket } = useTicketContext();
   const fileInputRef = useRef(null);
   
   const [formData, setFormData] = useState({
@@ -31,6 +33,7 @@ const TicketForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    addTicket(formData);
     notification.success('Your ticket has been submitted! We will get back to you soon.');
     navigate('/customer');
   };
