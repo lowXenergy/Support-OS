@@ -12,28 +12,40 @@ const Header = ({ title, toggleSidebar }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const dropdownRef = useRef(null);
 
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  const notifications = [
+  const initialNotifications = [
     { id: 1, title: 'New Ticket Assigned', message: 'High priority ticket #TC-1024 assigned to you.', time: '2m ago', type: 'ticket', icon: MessageSquare, read: false },
     { id: 2, title: 'System Update', message: 'SupportOS will undergo maintenance at 2:00 AM UTC.', time: '1h ago', type: 'system', icon: Zap, read: false },
     { id: 3, title: 'Security Alert', message: 'New login detected from San Francisco, CA.', time: '3h ago', type: 'security', icon: Shield, read: true },
     { id: 4, title: 'Reply Received', message: 'Customer Sarah Connor replied to #TC-992.', time: '5h ago', type: 'ticket', icon: MessageSquare, read: true },
   ];
 
+  const [notificationList, setNotificationList] = useState(initialNotifications);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.ref?.current?.contains(event.target) && !event.target.closest('.notification-trigger')) {
-        // setShowNotifications(false); // Fix: simplified below
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target) && !event.target.closest('.notification-trigger')) {
+        setShowNotifications(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  const handleMarkAllAsRead = () => {
+    setNotificationList(prev => prev.map(n => ({ ...n, read: true })));
+  };
+
+  const handleMarkAsRead = (id) => {
+    setNotificationList(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+  };
+
+  const unreadCount = notificationList.filter(n => !n.read).length;
 
   const headerStyle = {
     display: 'flex',
@@ -124,22 +136,28 @@ const Header = ({ title, toggleSidebar }) => {
             style={{ color: 'var(--text)', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '10px', position: 'relative', transition: 'all 0.2s', backgroundColor: showNotifications ? 'var(--surface-hover)' : 'transparent' }}
           >
             <Bell size={20} />
-            <span style={{ position: 'absolute', top: '10px', right: '10px', width: '8px', height: '8px', backgroundColor: 'var(--accent)', borderRadius: '50%', border: '2px solid var(--surface)' }}></span>
+            {unreadCount > 0 && <span style={{ position: 'absolute', top: '10px', right: '10px', width: '8px', height: '8px', backgroundColor: 'var(--accent)', borderRadius: '50%', border: '2px solid var(--surface)' }}></span>}
           </button>
 
           {/* Notification Dropdown */}
           <div style={dropdownStyle} ref={dropdownRef}>
             <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--bg)' }}>
               <span style={{ fontWeight: '700', color: 'var(--text-bright)' }}>Notifications</span>
-              <button style={{ fontSize: '12px', color: 'var(--accent)', fontWeight: '600', background: 'none', border: 'none', cursor: 'pointer' }}>Mark all as read</button>
+              <button 
+                onClick={handleMarkAllAsRead}
+                style={{ fontSize: '12px', color: 'var(--accent)', fontWeight: '600', background: 'none', border: 'none', cursor: 'pointer' }}
+              >
+                Mark all as read
+              </button>
             </div>
             <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-              {notifications.map(n => (
+              {notificationList.map(n => (
                 <div 
                   key={n.id} 
                   style={notificationItemStyle(n.read)}
                   onMouseOver={e => e.currentTarget.style.backgroundColor = 'var(--surface-hover)'}
                   onMouseOut={e => e.currentTarget.style.backgroundColor = n.read ? 'transparent' : 'var(--bg)'}
+                  onClick={() => handleMarkAsRead(n.id)}
                 >
                   <div style={{ width: '40px', height: '40px', borderRadius: '10px', backgroundColor: n.type === 'security' ? 'rgba(239, 68, 68, 0.1)' : 'var(--accent-muted)', color: n.type === 'security' ? 'var(--error)' : 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <n.icon size={18} />
