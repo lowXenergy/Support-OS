@@ -34,6 +34,7 @@ import BusinessSettings from './pages/admin/BusinessSettings';
 // SuperAdmin Pages
 import SuperAdminDashboard from './pages/superadmin/SuperAdminDashboard';
 import TenantList from './pages/superadmin/TenantList';
+import SuperAdminSettings from './pages/superadmin/SuperAdminSettings';
 
 import { NotificationProvider } from './contexts/NotificationContext';
 import { TicketProvider } from './contexts/TicketContext';
@@ -84,6 +85,7 @@ function App() {
           <Route path="/superadmin" element={<ProtectedRoute role="superadmin"><PageWrapper /></ProtectedRoute>}>
             <Route index element={<SuperAdminDashboard />} />
             <Route path="tenants" element={<TenantList />} />
+            <Route path="settings" element={<SuperAdminSettings />} />
           </Route>
 
           {/* 404 Catch-All Route */}
