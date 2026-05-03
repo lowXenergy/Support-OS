@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Avatar from '../common/Avatar';
 import { Bell, Search, Settings, X, Check, Clock, MessageSquare, Zap, Shield, AlertCircle, Menu } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 
 const Header = ({ title, toggleSidebar }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [showNotifications, setShowNotifications] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const dropdownRef = useRef(null);
@@ -91,7 +92,7 @@ const Header = ({ title, toggleSidebar }) => {
               <Menu size={20} />
             </button>
           )}
-          {!isMobile && (
+          {!isMobile && user?.role !== 'agent' && (
             <div style={{ position: 'relative', width: '100%' }}>
               <Search size={18} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text)' }} />
               <input 
@@ -160,14 +161,19 @@ const Header = ({ title, toggleSidebar }) => {
           </div>
         </div>
 
-        <button 
-          onClick={() => navigate(`/${user?.role}/settings` || '/admin/settings')}
-          style={{ color: 'var(--text)', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '10px', transition: 'all 0.2s' }}
-          onMouseEnter={e => e.currentTarget.style.backgroundColor = 'var(--surface-hover)'}
-          onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
-        >
-          <Settings size={20} />
-        </button>
+        {location.pathname !== '/agent/profile' && (
+          <button 
+            onClick={() => {
+              if (user?.role === 'agent') navigate('/agent/profile');
+              else navigate(`/${user?.role}/settings` || '/admin/settings');
+            }}
+            style={{ color: 'var(--text)', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '10px', transition: 'all 0.2s' }}
+            onMouseEnter={e => e.currentTarget.style.backgroundColor = 'var(--surface-hover)'}
+            onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+          >
+            <Settings size={20} />
+          </button>
+        )}
         
         <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '8px' : '12px', paddingLeft: isMobile ? '8px' : '20px', borderLeft: isMobile ? 'none' : '1px solid var(--border)' }}>
           {!isMobile && (
