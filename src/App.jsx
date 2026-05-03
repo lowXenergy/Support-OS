@@ -36,6 +36,7 @@ import SuperAdminDashboard from './pages/superadmin/SuperAdminDashboard';
 import TenantList from './pages/superadmin/TenantList';
 
 import { NotificationProvider } from './contexts/NotificationContext';
+import { TicketProvider } from './contexts/TicketContext';
 
 import NotFound from './pages/NotFound';
 import LandingPage from './pages/LandingPage';
@@ -43,7 +44,8 @@ import LandingPage from './pages/LandingPage';
 function App() {
   return (
     <NotificationProvider>
-      <Router>
+      <TicketProvider>
+        <Router>
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
@@ -88,6 +90,7 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
+      </TicketProvider>
     </NotificationProvider>
   );
 }
